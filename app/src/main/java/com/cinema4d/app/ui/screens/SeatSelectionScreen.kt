@@ -79,6 +79,12 @@ import androidx.compose.ui.unit.IntOffset
 import kotlin.math.roundToInt
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 
 @Composable
 fun SeatSelectionScreen(
@@ -141,22 +147,31 @@ fun SeatSelectionScreen(
                     ErrorView("Seat map unavailable")
                 } else {
                     Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                        when (state.mode) {
-                            SeatViewMode.MAP -> SeatMapCanvas(
-                                seatMap = seatMap,
-                                occupied = state.occupied,
-                                selected = state.selected.toSet(),
-                                previewSeatId = state.previewSeatId,
-                                interactive = true,
-                                onSeatClick = vm::onSeatClick,
-                                modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
-                            )
-                            SeatViewMode.SEAT_VIEW -> SeatViewerWithSheet(
-                                seatMap = seatMap,
-                                state = state,
-                                vm = vm,
-                                onProceed = onProceed,
-                            )
+                        AnimatedContent(
+                            targetState = state.mode,
+                            transitionSpec = {
+                                (fadeIn(tween(280)) + scaleIn(tween(320), initialScale = 0.97f)) togetherWith
+                                    fadeOut(tween(180))
+                            },
+                            label = "seat-mode",
+                        ) { mode ->
+                            when (mode) {
+                                SeatViewMode.MAP -> SeatMapCanvas(
+                                    seatMap = seatMap,
+                                    occupied = state.occupied,
+                                    selected = state.selected.toSet(),
+                                    previewSeatId = state.previewSeatId,
+                                    interactive = true,
+                                    onSeatClick = vm::onSeatClick,
+                                    modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp),
+                                )
+                                SeatViewMode.SEAT_VIEW -> SeatViewerWithSheet(
+                                    seatMap = seatMap,
+                                    state = state,
+                                    vm = vm,
+                                    onProceed = onProceed,
+                                )
+                            }
                         }
                     }
 

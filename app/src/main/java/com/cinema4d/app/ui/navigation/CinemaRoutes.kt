@@ -6,10 +6,24 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 sealed interface CinemaRoute {
-    data object Movies : CinemaRoute
-    data class MovieDetail(val movieId: String) : CinemaRoute
-    data class Seats(val showId: String) : CinemaRoute
-    data class Ticket(val showId: String, val seatIds: List<String>) : CinemaRoute
+    /** How deep the screen sits in the flow — drives the transition direction. */
+    val depth: Int
+
+    data object Movies : CinemaRoute {
+        override val depth = 0
+    }
+
+    data class MovieDetail(val movieId: String) : CinemaRoute {
+        override val depth = 1
+    }
+
+    data class Seats(val showId: String) : CinemaRoute {
+        override val depth = 2
+    }
+
+    data class Ticket(val showId: String, val seatIds: List<String>) : CinemaRoute {
+        override val depth = 3
+    }
 }
 
 class CinemaNavigator(start: CinemaRoute = CinemaRoute.Movies) {
