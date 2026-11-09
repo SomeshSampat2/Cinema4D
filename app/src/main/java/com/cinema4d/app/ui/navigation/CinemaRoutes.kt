@@ -24,22 +24,6 @@ sealed interface CinemaRoute {
     data class Ticket(val showId: String, val seatIds: List<String>) : CinemaRoute {
         override val depth = 3
     }
-
-    data object Trains : CinemaRoute {
-        override val depth = 0
-    }
-
-    data class TrainSeats(val trainId: String, val classId: String) : CinemaRoute {
-        override val depth = 1
-    }
-
-    data class TrainTicket(
-        val trainId: String,
-        val classId: String,
-        val seatIds: List<String>,
-    ) : CinemaRoute {
-        override val depth = 2
-    }
 }
 
 class CinemaNavigator(start: CinemaRoute = CinemaRoute.Movies) {
@@ -57,11 +41,6 @@ class CinemaNavigator(start: CinemaRoute = CinemaRoute.Movies) {
     }
 
     fun popToRoot() {
-        // keep whichever section the user started in (movies or trains)
-        _backStack.update { listOf(it.first()) }
-    }
-
-    fun resetTo(route: CinemaRoute) {
-        _backStack.value = listOf(route)
+        _backStack.update { listOf(CinemaRoute.Movies) }
     }
 }

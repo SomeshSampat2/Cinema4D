@@ -3,7 +3,6 @@ package com.cinema4d.app.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.animation.AnimatedContent
@@ -24,19 +23,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.cinema4d.app.ui.navigation.CinemaNavigator
 import com.cinema4d.app.ui.navigation.CinemaRoute
 import com.cinema4d.app.ui.screens.MovieDetailScreen
 import com.cinema4d.app.ui.screens.MoviesScreen
 import com.cinema4d.app.ui.screens.SeatSelectionScreen
 import com.cinema4d.app.ui.screens.TicketScreen
-import com.cinema4d.app.ui.screens.TrainSeatsScreen
-import com.cinema4d.app.ui.screens.TrainTicketScreen
-import com.cinema4d.app.ui.screens.TrainsScreen
-import com.cinema4d.app.ui.components.SectionTabs
 import com.cinema4d.app.ui.theme.Cinema4DTheme
 
 @Composable
@@ -109,37 +102,6 @@ fun CinemaApp(modifier: Modifier = Modifier) {
                 showId = r.showId,
                 seatIds = r.seatIds,
                 onDone = { navigator.popToRoot() },
-            )
-            is CinemaRoute.Trains -> TrainsScreen(
-                onSelectClass = { trainId, classId ->
-                    navigator.push(CinemaRoute.TrainSeats(trainId, classId))
-                },
-            )
-            is CinemaRoute.TrainSeats -> TrainSeatsScreen(
-                trainId = r.trainId,
-                classId = r.classId,
-                onBack = { navigator.pop() },
-                onProceed = { seats ->
-                    navigator.push(CinemaRoute.TrainTicket(r.trainId, r.classId, seats))
-                },
-            )
-            is CinemaRoute.TrainTicket -> TrainTicketScreen(
-                trainId = r.trainId,
-                classId = r.classId,
-                seatIds = r.seatIds,
-                onDone = { navigator.popToRoot() },
-            )
-        }
-
-        if (route is CinemaRoute.Movies || route is CinemaRoute.Trains) {
-            SectionTabs(
-                selected = if (route is CinemaRoute.Trains) 1 else 0,
-                onSelect = { index ->
-                    navigator.resetTo(if (index == 0) CinemaRoute.Movies else CinemaRoute.Trains)
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 22.dp),
             )
         }
     }
