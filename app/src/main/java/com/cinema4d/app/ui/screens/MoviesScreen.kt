@@ -109,7 +109,7 @@ fun MoviesScreen(
                     columns = GridCells.Fixed(2),
                     horizontalArrangement = Arrangement.spacedBy(14.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp),
-                    contentPadding = PaddingValues(bottom = 28.dp),
+                    contentPadding = PaddingValues(bottom = 112.dp),
                 ) {
                     items(state.movies, key = { it.id }) { movie ->
                         MovieCard(movie = movie, onClick = { onMovieClick(movie.id) })

@@ -54,6 +54,11 @@ private data class SeatMapLayout(
 private fun tierColor(tier: String): Color = when (tier) {
     "prime" -> TierPrime
     "recliner" -> TierRecliner
+    "window" -> TierClassic
+    "middle" -> TierClassic
+    "aisle" -> TierRecliner
+    "lower" -> TierPrime
+    "upper" -> TierRecliner
     else -> TierClassic
 }
 
@@ -67,6 +72,7 @@ fun SeatMapCanvas(
     onSeatClick: (SeatInfo) -> Unit,
     modifier: Modifier = Modifier,
     compact: Boolean = false,
+    frontLabel: String = "SCREEN",
 ) {
     val density = LocalDensity.current
     val textMeasurer = rememberTextMeasurer()
@@ -98,7 +104,7 @@ fun SeatMapCanvas(
                     }
                 },
         ) {
-            drawSeatMap(layout, occupied, selected, previewSeatId, textMeasurer, compact, screenAccent)
+            drawSeatMap(layout, occupied, selected, previewSeatId, textMeasurer, compact, screenAccent, frontLabel)
         }
     }
 }
@@ -151,6 +157,7 @@ private fun DrawScope.drawSeatMap(
     textMeasurer: TextMeasurer,
     compact: Boolean,
     screenAccent: Color,
+    frontLabel: String,
 ) {
     // screen bar
     drawRoundRect(
@@ -161,9 +168,9 @@ private fun DrawScope.drawSeatMap(
     )
     if (!compact) {
         val style = TextStyle(color = Color(0xFFB9C2D4), fontSize = 10.sp, fontWeight = FontWeight.Bold)
-        val t = textMeasurer.measure("SCREEN", style)
+        val t = textMeasurer.measure(frontLabel, style)
         drawText(
-            textMeasurer, "SCREEN",
+            textMeasurer, frontLabel,
             Offset(
                 layout.labelWidth + layout.mapWidth / 2 - t.size.width / 2,
                 layout.screenArea * 0.47f - t.size.height / 2,
